@@ -1,0 +1,19 @@
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND="noninteractive"
+WORKDIR /data
+USER root
+
+RUN apt update && \
+    apt install --no-install-recommends -y \
+    texlive-fonts-recommended \
+    texlive-fonts-extra \
+    texlive-xetex \
+    texlive-lang-cyrillic \
+    lmodern
+
+COPY stub/pandoc-2.18-1-amd64.deb ./
+RUN dpkg -i pandoc-2.18-1-amd64.deb && \
+    rm pandoc-2.18-1-amd64.deb
+
+CMD [ "/bin/bash" ]

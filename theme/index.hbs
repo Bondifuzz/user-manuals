@@ -1,0 +1,368 @@
+<!DOCTYPE HTML>
+<html lang="{{ language }}" class="sidebar-visible no-js bondi">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>{{ title }}</title>
+        {{#if is_print }}
+        <meta name="robots" content="noindex" />
+        {{/if}}
+        {{#if base_url}}
+        <base href="{{ base_url }}">
+        {{/if}}
+
+
+        <!-- Custom HTML head -->
+        {{> head}}
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="{{ description }}">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        {{#if favicon_svg}}
+        <link rel="icon" href="{{ path_to_root }}favicon.svg">
+        {{/if}}
+        {{#if favicon_png}}
+        <link rel="shortcut icon" href="{{ path_to_root }}favicon.png">
+        {{/if}}
+        <link rel="stylesheet" href="{{ path_to_root }}css/variables.css">
+        <link rel="stylesheet" href="{{ path_to_root }}css/general.css">
+        <link rel="stylesheet" href="{{ path_to_root }}css/chrome.css">
+        {{#if print_enable}}
+        <link rel="stylesheet" href="{{ path_to_root }}css/print.css" media="print">
+        {{/if}}
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="{{ path_to_root }}FontAwesome/css/font-awesome.css">
+        {{#if copy_fonts}}
+        <link rel="stylesheet" href="{{ path_to_root }}fonts/fonts.css">
+        {{/if}}
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="{{ path_to_root }}highlight.css">
+        <link rel="stylesheet" href="{{ path_to_root }}tomorrow-night.css">
+        <link rel="stylesheet" href="{{ path_to_root }}ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        {{#each additional_css}}
+        <link rel="stylesheet" href="{{ ../path_to_root }}{{ this }}">
+        {{/each}}
+
+        {{#if mathjax_support}}
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        {{/if}}
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "{{ path_to_root }}";
+            var default_theme = "{{ default_theme }}";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('{{ default_theme }}')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                {{!-- <svg width="150"  viewBox="0 0 114 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M26.4238 4.59814H31.7023C33.7826 4.59814 35.1946 5.74078 35.1946 7.40204C35.1946 8.69726 34.3254 9.71838 33.0677 9.93172C34.3254 10.1297 35.1946 11.1659 35.1946 12.4613C35.1946 14.1222 33.7819 15.265 31.7023 15.265H26.4238V4.59814ZM31.3763 9.01734C32.199 9.01734 32.7579 8.48393 32.7579 7.73718C32.7579 6.97538 32.199 6.44209 31.3763 6.44209H28.8768V9.01734H31.3763ZM31.3763 13.3907C32.1835 13.3907 32.7425 12.8574 32.7425 12.1108C32.7425 11.3489 32.1835 10.8155 31.3763 10.8155H28.8768V13.3907H31.3763Z" fill="white"/>
+<path d="M36.3438 10.6939C36.3438 7.18899 39.34 4.30859 43.066 4.30859C46.2022 4.30859 48.2823 6.24436 48.2823 9.16965C48.2823 12.6593 45.2705 15.555 41.56 15.555C38.4397 15.5549 36.3438 13.6043 36.3438 10.6939ZM41.56 13.3301C43.8422 13.3301 45.7672 11.3643 45.7672 9.21576C45.7672 7.63086 44.696 6.53365 43.066 6.53365C40.7993 6.53365 38.8588 8.4842 38.8588 10.6481C38.8588 12.2021 39.93 13.3301 41.56 13.3301Z" fill="white"/>
+<path d="M49.6172 4.59814H52.1011L56.7896 11.3946L56.6963 4.59814H59.1493V15.265H56.6654L51.9769 8.46874L52.07 15.265H49.6172V4.59814Z" fill="white"/>
+<path d="M60.6387 4.59814H64.9545C68.37 4.59814 70.6517 6.73152 70.6517 9.93172C70.6517 13.1319 68.3696 15.265 64.9545 15.265H60.6387V4.59814ZM64.877 13.3146C66.8176 13.3146 68.1215 11.9584 68.1215 9.93172C68.1215 7.90508 66.8176 6.5487 64.877 6.5487H63.1377V13.3146H64.877Z" fill="white"/>
+<path d="M75.8379 4.59814H83.1344V6.5487H78.3528V9.12408H82.8241V11.0288H78.3528V15.265H75.8379V4.59814Z" fill="white"/>
+<path d="M84.2693 9.41348L86.4272 3.57715L88.787 4.41531L86.6603 10.1906C86.0548 11.8211 87.0639 13.2993 88.7405 13.2993C89.7186 13.2993 90.4798 12.7507 90.883 11.6841L93.4384 4.59813L95.4427 6.43321L93.2272 12.6135C92.513 14.5184 90.883 15.5699 88.8173 15.5699C85.3251 15.5699 83.1206 12.5221 84.2693 9.41348Z" fill="white"/>
+<path d="M94.9041 13.573L100.074 6.54821H93.4707V4.59766H103.055V6.25865L97.8849 13.3141H103.443V15.2645H94.9041V13.573Z" fill="white"/>
+<path d="M104.653 13.573L109.823 6.54821H104.42V4.59766H112.803V6.25865L107.634 13.3141H113.191V15.2645H104.653V13.573Z" fill="white"/>
+<path d="M2.36039 4.63374C1.89355 4.63374 1.4372 4.49786 1.04904 4.24328C0.660872 3.9887 0.358322 3.62685 0.179669 3.2035C0.00101686 2.78014 -0.0457189 2.3143 0.0453574 1.86487C0.136434 1.41544 0.361232 1.00262 0.691339 0.678597C1.02145 0.354577 1.44203 0.133916 1.8999 0.0445189C2.35777 -0.044878 2.83238 0.0010042 3.26368 0.176362C3.69499 0.351721 4.06363 0.648683 4.323 1.02969C4.58236 1.4107 4.72078 1.85864 4.72078 2.31687C4.7201 2.93114 4.47119 3.52004 4.02868 3.95439C3.58617 4.38874 2.9862 4.63306 2.36039 4.63374Z" fill="#B37FEB"/>
+<path d="M2.36081 4.25287C3.44998 4.25287 4.33292 3.3862 4.33292 2.31711C4.33292 1.24802 3.44998 0.381348 2.36081 0.381348C1.27163 0.381348 0.388672 1.24802 0.388672 2.31711C0.388672 3.3862 1.27163 4.25287 2.36081 4.25287Z" fill="#B37FEB"/>
+<path d="M6.30417 8.12398C7.39335 8.12398 8.27631 7.2573 8.27631 6.18821C8.27631 5.11911 7.39335 4.25244 6.30417 4.25244C5.21499 4.25244 4.33203 5.11911 4.33203 6.18821C4.33203 7.2573 5.21499 8.12398 6.30417 8.12398Z" fill="#B37FEB"/>
+<path d="M10.2495 11.9956C11.3387 11.9956 12.2216 11.1289 12.2216 10.0598C12.2216 8.9907 11.3387 8.12402 10.2495 8.12402C9.1603 8.12402 8.27734 8.9907 8.27734 10.0598C8.27734 11.1289 9.1603 11.9956 10.2495 11.9956Z" fill="#B37FEB"/>
+<path d="M10.2491 20.1196C9.78222 20.1196 9.32587 19.9837 8.9377 19.7291C8.54954 19.4745 8.24701 19.1127 8.06835 18.6893C7.8897 18.266 7.84295 17.8001 7.93402 17.3507C8.0251 16.9013 8.24992 16.4885 8.58002 16.1644C8.91013 15.8404 9.33071 15.6198 9.78858 15.5304C10.2464 15.441 10.721 15.4868 11.1523 15.6622C11.5836 15.8376 11.9523 16.1345 12.2117 16.5155C12.471 16.8965 12.6094 17.3445 12.6094 17.8027C12.6088 18.417 12.3599 19.0059 11.9174 19.4402C11.4748 19.8746 10.8749 20.1189 10.2491 20.1196Z" fill="#B37FEB"/>
+<path d="M10.2495 19.7387C11.3387 19.7387 12.2216 18.872 12.2216 17.8029C12.2216 16.7339 11.3387 15.8672 10.2495 15.8672C9.1603 15.8672 8.27734 16.7339 8.27734 17.8029C8.27734 18.872 9.1603 19.7387 10.2495 19.7387Z" fill="#B37FEB"/>
+<path d="M18.1381 11.9956C19.2273 11.9956 20.1103 11.1289 20.1103 10.0598C20.1103 8.9907 19.2273 8.12402 18.1381 8.12402C17.049 8.12402 16.166 8.9907 16.166 10.0598C16.166 11.1289 17.049 11.9956 18.1381 11.9956Z" fill="#B37FEB"/>
+<path d="M2.36081 11.9956C3.44998 11.9956 4.33292 11.1289 4.33292 10.0598C4.33292 8.9907 3.44998 8.12402 2.36081 8.12402C1.27163 8.12402 0.388672 8.9907 0.388672 10.0598C0.388672 11.1289 1.27163 11.9956 2.36081 11.9956Z" fill="#B37FEB"/>
+<path d="M10.2491 4.63374C9.78222 4.63374 9.32587 4.49786 8.9377 4.24328C8.54954 3.9887 8.24701 3.62685 8.06835 3.2035C7.8897 2.78014 7.84295 2.3143 7.93402 1.86487C8.0251 1.41544 8.24992 1.00262 8.58002 0.678597C8.91013 0.354577 9.33071 0.133916 9.78858 0.0445189C10.2464 -0.044878 10.721 0.0010042 11.1523 0.176362C11.5836 0.351721 11.9523 0.648683 12.2117 1.02969C12.471 1.4107 12.6094 1.85864 12.6094 2.31687C12.6088 2.93114 12.3599 3.52004 11.9174 3.95439C11.4748 4.38874 10.8749 4.63306 10.2491 4.63374Z" fill="#B37FEB"/>
+<path d="M10.2495 4.25287C11.3387 4.25287 12.2216 3.3862 12.2216 2.31711C12.2216 1.24802 11.3387 0.381348 10.2495 0.381348C9.1603 0.381348 8.27734 1.24802 8.27734 2.31711C8.27734 3.3862 9.1603 4.25287 10.2495 4.25287Z" fill="#B37FEB"/>
+<path d="M14.1928 15.8671C15.282 15.8671 16.165 15.0005 16.165 13.9314C16.165 12.8623 15.282 11.9956 14.1928 11.9956C13.1036 11.9956 12.2207 12.8623 12.2207 13.9314C12.2207 15.0005 13.1036 15.8671 14.1928 15.8671Z" fill="#B37FEB"/>
+<path d="M18.1379 20.059C17.671 20.0591 17.2147 19.9232 16.8265 19.6686C16.4383 19.4141 16.1357 19.0522 15.9571 18.6289C15.7784 18.2055 15.7316 17.7397 15.8227 17.2902C15.9137 16.8408 16.1385 16.428 16.4686 16.1039C16.7988 15.7799 17.2193 15.5592 17.6772 15.4698C18.1351 15.3804 18.6097 15.4263 19.041 15.6016C19.4723 15.777 19.841 16.074 20.1003 16.455C20.3597 16.836 20.4982 17.2839 20.4982 17.7422C20.4974 18.3564 20.2485 18.9453 19.806 19.3796C19.3636 19.8139 18.7637 20.0583 18.1379 20.059Z" fill="#B37FEB"/>
+<path d="M18.1381 19.6782C19.2273 19.6782 20.1103 18.8115 20.1103 17.7424C20.1103 16.6733 19.2273 15.8066 18.1381 15.8066C17.049 15.8066 16.166 16.6733 16.166 17.7424C16.166 18.8115 17.049 19.6782 18.1381 19.6782Z" fill="#B37FEB"/>
+<path d="M18.1379 4.63373C17.671 4.63376 17.2147 4.4979 16.8265 4.24334C16.4383 3.98877 16.1357 3.62694 15.9571 3.20359C15.7784 2.78024 15.7316 2.31439 15.8227 1.86495C15.9137 1.41552 16.1385 1.00267 16.4686 0.67864C16.7988 0.354607 17.2193 0.133937 17.6772 0.0445292C18.1351 -0.0448785 18.6097 0.000993875 19.041 0.176348C19.4723 0.351702 19.841 0.648658 20.1003 1.02967C20.3597 1.41068 20.4982 1.85863 20.4982 2.31687C20.4974 2.9311 20.2485 3.51997 19.806 3.95431C19.3636 4.38864 18.7637 4.63298 18.1379 4.63373Z" fill="#B37FEB"/>
+<path d="M18.1381 4.25287C19.2273 4.25287 20.1103 3.3862 20.1103 2.31711C20.1103 1.24802 19.2273 0.381348 18.1381 0.381348C17.049 0.381348 16.166 1.24802 16.166 2.31711C16.166 3.3862 17.049 4.25287 18.1381 4.25287Z" fill="#B37FEB"/>
+<path d="M14.1928 8.12398C15.282 8.12398 16.165 7.2573 16.165 6.18821C16.165 5.11911 15.282 4.25244 14.1928 4.25244C13.1036 4.25244 12.2207 5.11911 12.2207 6.18821C12.2207 7.2573 13.1036 8.12398 14.1928 8.12398Z" fill="#B37FEB"/>
+<path d="M6.30417 15.8671C7.39335 15.8671 8.27631 15.0005 8.27631 13.9314C8.27631 12.8623 7.39335 11.9956 6.30417 11.9956C5.21499 11.9956 4.33203 12.8623 4.33203 13.9314C4.33203 15.0005 5.21499 15.8671 6.30417 15.8671Z" fill="#B37FEB"/>
+<path d="M2.36039 20.059C1.89355 20.059 1.4372 19.9232 1.04904 19.6686C0.660872 19.414 0.358322 19.0521 0.179669 18.6288C0.00101686 18.2054 -0.0457189 17.7396 0.0453574 17.2902C0.136434 16.8407 0.361232 16.4279 0.691339 16.1039C1.02145 15.7799 1.44203 15.5592 1.8999 15.4698C2.35777 15.3804 2.83238 15.4263 3.26368 15.6017C3.69499 15.777 4.06363 16.074 4.323 16.455C4.58236 16.836 4.72078 17.2839 4.72078 17.7422C4.7201 18.3564 4.47119 18.9453 4.02868 19.3797C3.58617 19.814 2.9862 20.0584 2.36039 20.059Z" fill="#B37FEB"/>
+<path d="M2.36081 19.6782C3.44998 19.6782 4.33292 18.8115 4.33292 17.7424C4.33292 16.6733 3.44998 15.8066 2.36081 15.8066C1.27163 15.8066 0.388672 16.6733 0.388672 17.7424C0.388672 18.8115 1.27163 19.6782 2.36081 19.6782Z" fill="#B37FEB"/>
+<path d="M74.3638 4.63379H71.7754V15.4015H74.3638V4.63379Z" fill="white"/>
+</svg> --}}
+                {{#toc}}{{/toc}}
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                {{> header}}
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">{{ theme_option "Light" }}</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">{{ theme_option "Rust" }}</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">{{ theme_option "Coal" }}</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">{{ theme_option "Navy" }}</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">{{ theme_option "Ayu" }}</button></li>
+                        </ul>
+                        {{#if search_enabled}}
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        {{/if}}
+                        {{!-- {{#if languages_enabled}}
+                        <button id="language-toggle" class="icon-button" type="button" title="Select language" aria-label="Select language" aria-haspopup="true" aria-expanded="false" aria-controls="language-list">
+                            <i class="fa fa-globe"></i>
+                        </button>
+                        <ul id="language-list" class="language-popup" aria-label="Languages" role="menu">
+                          {{#each languages}}
+                            <li role="none">{{ language_option this }}</li>
+                          {{/each}}
+                        </ul>
+                        {{/if}} --}}
+                    </div>
+
+                    <h1 class="menu-title">{{ book_title }}</h1>
+
+                    <div class="right-buttons">
+                        {{#if print_enable}}
+                        <a href="{{ path_to_root }}print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        {{/if}}
+                        {{#if git_repository_url}}
+                        <a href="{{git_repository_url}}" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa {{git_repository_icon}}"></i>
+                        </a>
+                        {{/if}}
+                        {{#if git_repository_edit_url}}
+                        <a href="{{git_repository_edit_url}}" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        {{/if}}
+
+                    </div>
+                </div>
+
+                {{#if search_enabled}}
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                {{/if}}
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        {{{ content }}}
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        {{#previous}}
+                            <a rel="prev" href="{{ path_to_root }}{{link}}" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                {{!-- <i class="fa fa-angle-left"></i> --}}
+                                                   <svg width="65" height="40" viewBox="0 0 65 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M11.9286 26.0491C11.3429 25.4633 11.3429 24.5135 11.9286 23.9278L21.4746 14.3818C22.0604 13.796 23.0101 13.796 23.5959 14.3818C24.1817 14.9676 24.1817 15.9173 23.5959 16.5031L15.1106 24.9884L23.5959 33.4737C24.1817 34.0595 24.1817 35.0092 23.5959 35.595C23.0101 36.1808 22.0604 36.1808 21.4746 35.595L11.9286 26.0491ZM32.0377 28.5135L32.8573 27.2572L32.8631 27.261L32.0377 28.5135ZM12.9893 23.4884C17.2502 23.4884 22.8724 23.2192 27.9557 22.2925C30.4974 21.8291 32.8616 21.2089 34.8363 20.3978C36.8277 19.5799 38.3108 18.6135 39.2149 17.5231L41.5243 19.438C40.18 21.0593 38.1937 22.2621 35.9761 23.1729C33.742 24.0904 31.1579 24.7582 28.4938 25.2439C23.1654 26.2153 17.3458 26.4884 12.9893 26.4884V23.4884ZM39.2149 17.5231C41.1353 15.207 40.9526 13.0313 40.1915 11.9242C39.8074 11.3655 39.2478 11.0044 38.565 10.9101C37.8759 10.815 36.9226 10.9759 35.7726 11.7338L34.1218 9.22883C35.7491 8.15636 37.4244 7.72415 38.9753 7.9383C40.5325 8.15331 41.8244 9.0039 42.6637 10.2247C44.3493 12.6766 44.1004 16.3309 41.5243 19.438L39.2149 17.5231ZM35.7726 11.7338C33.2838 13.374 30.9703 16.3983 30.129 19.4851C29.7138 21.0082 29.6765 22.4726 30.0758 23.7665C30.468 25.0371 31.3125 26.2494 32.8573 27.2572L31.2181 29.7698C29.1259 28.4049 27.8214 26.6345 27.2092 24.6512C26.6043 22.6911 26.7074 20.6304 27.2346 18.6962C28.2778 14.8684 31.056 11.2493 34.1218 9.22883L35.7726 11.7338ZM32.8631 27.261C34.4086 28.2796 37.1416 29.115 40.4853 29.115C43.7957 29.115 47.5947 28.2938 51.2448 26.1374L52.7708 28.7203C48.618 31.1737 44.2835 32.115 40.4853 32.115C36.7204 32.115 33.3698 31.1879 31.2123 29.766L32.8631 27.261Z" fill="#00D95A"/>
+</svg>
+
+                            </a>
+                        {{/previous}}
+
+                        {{#next}}
+                            <a rel="next" href="{{ path_to_root }}{{link}}" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                {{!-- <i class="fa fa-angle-right"></i> --}}
+                                                        <svg width="65" height="40" viewBox="0 0 65 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M64.0012 20.9764C64.5559 20.3611 64.5069 19.4127 63.8916 18.8579L53.8655 9.81765C53.2502 9.2629 52.3018 9.31194 51.747 9.9272C51.1922 10.5425 51.2413 11.4909 51.8565 12.0457L60.7687 20.0815L52.7329 28.9936C52.1782 29.6089 52.2272 30.5573 52.8425 31.1121C53.4577 31.6669 54.4062 31.6178 54.9609 31.0026L64.0012 20.9764ZM47.0285 20.792L47.0862 22.2908L47.0961 22.2905L47.106 22.29L47.0285 20.792ZM31.0471 23.8272L30.2413 22.562L30.2355 22.5657L31.0471 23.8272ZM14.1324 32.4661L14.3861 33.9445L14.3935 33.9432L14.4009 33.9418L14.1324 32.4661ZM62.8097 18.4739L46.9511 19.294L47.106 22.29L62.9646 21.4699L62.8097 18.4739ZM46.9709 19.2931C41.4901 19.504 36.7927 19.2676 33.0186 18.4363C29.2386 17.6037 26.5313 16.2072 24.8412 14.2173L22.5547 16.1594C24.8308 18.8393 28.2494 20.4577 32.3733 21.366C36.5032 22.2757 41.488 22.5063 47.0862 22.2908L46.9709 19.2931ZM24.8412 14.2173C23.1942 12.2782 23.3932 10.5242 23.9911 9.67509C24.2972 9.24046 24.7469 8.95281 25.3091 8.87702C25.8772 8.80044 26.6825 8.92741 27.6692 9.56217L29.2923 7.03919C27.8292 6.09794 26.316 5.71417 24.9084 5.90391C23.4948 6.09444 22.3113 6.85015 21.5383 7.94775C19.9782 10.1631 20.2355 13.4289 22.5547 16.1594L24.8412 14.2173ZM27.6692 9.56217C29.8317 10.9534 31.8369 13.5184 32.5624 16.1171C32.9194 17.3956 32.9469 18.6078 32.6116 19.6685C32.2834 20.7063 31.573 21.7139 30.2413 22.562L31.8528 25.0924C33.7291 23.8976 34.9143 22.3368 35.472 20.5729C36.0225 18.8318 35.9261 17.0087 35.4519 15.3104C34.5152 11.9552 32.0292 8.79993 29.2923 7.03919L27.6692 9.56217ZM30.2355 22.5657C28.9062 23.421 26.5266 24.1367 23.5959 24.1367C20.6981 24.1367 17.3739 23.4348 14.1819 21.5939L12.6831 24.1927C16.3736 26.321 20.2235 27.1367 23.5959 27.1367C26.9353 27.1367 29.9217 26.3348 31.8586 25.0887L30.2355 22.5657ZM14.1819 21.5939C12.6547 20.7131 12.0311 19.8484 11.827 19.2625C11.6387 18.7219 11.7606 18.3188 12.0071 18.0301C12.5031 17.4489 14.2247 16.8048 16.4305 18.6689L18.3669 16.3775C15.3234 13.8055 11.6206 13.8618 9.72522 16.0824C8.77602 17.1945 8.46046 18.7178 8.99394 20.2493C9.51161 21.7355 10.7691 23.0889 12.6831 24.1927L14.1819 21.5939ZM16.4305 18.6689C18.6429 20.5385 19.5655 23.3897 19.1424 25.8818C18.7321 28.2986 17.0603 30.4087 13.8639 30.9903L14.4009 33.9418C18.9036 33.1225 21.4897 29.9792 22.1001 26.3839C22.6977 22.8639 21.4039 18.9441 18.3669 16.3775L16.4305 18.6689ZM13.8788 30.9877C12.0898 31.2946 9.99356 31.145 8.03653 30.5495C6.07431 29.9524 4.36786 28.9435 3.25942 27.6413L0.974964 29.5859C2.54954 31.4357 4.80927 32.7033 7.16321 33.4195C9.52233 34.1374 12.0922 34.338 14.3861 33.9445L13.8788 30.9877Z" fill="#00D95A"/>
+</svg>
+                            </a>
+                        {{/next}}
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                {{#previous}}
+                    <a rel="prev" href="{{ path_to_root }}{{link}}" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        {{!-- <i class="fa fa-bath"></i> --}}
+                        {{!-- <img src="/theme/PaginationArrowLeft.svg"/> --}}
+                        <svg width="65" height="40" viewBox="0 0 65 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M11.9286 26.0491C11.3429 25.4633 11.3429 24.5135 11.9286 23.9278L21.4746 14.3818C22.0604 13.796 23.0101 13.796 23.5959 14.3818C24.1817 14.9676 24.1817 15.9173 23.5959 16.5031L15.1106 24.9884L23.5959 33.4737C24.1817 34.0595 24.1817 35.0092 23.5959 35.595C23.0101 36.1808 22.0604 36.1808 21.4746 35.595L11.9286 26.0491ZM32.0377 28.5135L32.8573 27.2572L32.8631 27.261L32.0377 28.5135ZM12.9893 23.4884C17.2502 23.4884 22.8724 23.2192 27.9557 22.2925C30.4974 21.8291 32.8616 21.2089 34.8363 20.3978C36.8277 19.5799 38.3108 18.6135 39.2149 17.5231L41.5243 19.438C40.18 21.0593 38.1937 22.2621 35.9761 23.1729C33.742 24.0904 31.1579 24.7582 28.4938 25.2439C23.1654 26.2153 17.3458 26.4884 12.9893 26.4884V23.4884ZM39.2149 17.5231C41.1353 15.207 40.9526 13.0313 40.1915 11.9242C39.8074 11.3655 39.2478 11.0044 38.565 10.9101C37.8759 10.815 36.9226 10.9759 35.7726 11.7338L34.1218 9.22883C35.7491 8.15636 37.4244 7.72415 38.9753 7.9383C40.5325 8.15331 41.8244 9.0039 42.6637 10.2247C44.3493 12.6766 44.1004 16.3309 41.5243 19.438L39.2149 17.5231ZM35.7726 11.7338C33.2838 13.374 30.9703 16.3983 30.129 19.4851C29.7138 21.0082 29.6765 22.4726 30.0758 23.7665C30.468 25.0371 31.3125 26.2494 32.8573 27.2572L31.2181 29.7698C29.1259 28.4049 27.8214 26.6345 27.2092 24.6512C26.6043 22.6911 26.7074 20.6304 27.2346 18.6962C28.2778 14.8684 31.056 11.2493 34.1218 9.22883L35.7726 11.7338ZM32.8631 27.261C34.4086 28.2796 37.1416 29.115 40.4853 29.115C43.7957 29.115 47.5947 28.2938 51.2448 26.1374L52.7708 28.7203C48.618 31.1737 44.2835 32.115 40.4853 32.115C36.7204 32.115 33.3698 31.1879 31.2123 29.766L32.8631 27.261Z" fill="#00D95A"/>
+</svg>
+
+                    </a>
+                {{/previous}}
+
+                {{#next}}
+                    <a rel="next" href="{{ path_to_root }}{{link}}" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        {{!-- <i class="fa fa-angle-right"></i> --}}
+                        <svg width="65" height="40" viewBox="0 0 65 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M64.0012 20.9764C64.5559 20.3611 64.5069 19.4127 63.8916 18.8579L53.8655 9.81765C53.2502 9.2629 52.3018 9.31194 51.747 9.9272C51.1922 10.5425 51.2413 11.4909 51.8565 12.0457L60.7687 20.0815L52.7329 28.9936C52.1782 29.6089 52.2272 30.5573 52.8425 31.1121C53.4577 31.6669 54.4062 31.6178 54.9609 31.0026L64.0012 20.9764ZM47.0285 20.792L47.0862 22.2908L47.0961 22.2905L47.106 22.29L47.0285 20.792ZM31.0471 23.8272L30.2413 22.562L30.2355 22.5657L31.0471 23.8272ZM14.1324 32.4661L14.3861 33.9445L14.3935 33.9432L14.4009 33.9418L14.1324 32.4661ZM62.8097 18.4739L46.9511 19.294L47.106 22.29L62.9646 21.4699L62.8097 18.4739ZM46.9709 19.2931C41.4901 19.504 36.7927 19.2676 33.0186 18.4363C29.2386 17.6037 26.5313 16.2072 24.8412 14.2173L22.5547 16.1594C24.8308 18.8393 28.2494 20.4577 32.3733 21.366C36.5032 22.2757 41.488 22.5063 47.0862 22.2908L46.9709 19.2931ZM24.8412 14.2173C23.1942 12.2782 23.3932 10.5242 23.9911 9.67509C24.2972 9.24046 24.7469 8.95281 25.3091 8.87702C25.8772 8.80044 26.6825 8.92741 27.6692 9.56217L29.2923 7.03919C27.8292 6.09794 26.316 5.71417 24.9084 5.90391C23.4948 6.09444 22.3113 6.85015 21.5383 7.94775C19.9782 10.1631 20.2355 13.4289 22.5547 16.1594L24.8412 14.2173ZM27.6692 9.56217C29.8317 10.9534 31.8369 13.5184 32.5624 16.1171C32.9194 17.3956 32.9469 18.6078 32.6116 19.6685C32.2834 20.7063 31.573 21.7139 30.2413 22.562L31.8528 25.0924C33.7291 23.8976 34.9143 22.3368 35.472 20.5729C36.0225 18.8318 35.9261 17.0087 35.4519 15.3104C34.5152 11.9552 32.0292 8.79993 29.2923 7.03919L27.6692 9.56217ZM30.2355 22.5657C28.9062 23.421 26.5266 24.1367 23.5959 24.1367C20.6981 24.1367 17.3739 23.4348 14.1819 21.5939L12.6831 24.1927C16.3736 26.321 20.2235 27.1367 23.5959 27.1367C26.9353 27.1367 29.9217 26.3348 31.8586 25.0887L30.2355 22.5657ZM14.1819 21.5939C12.6547 20.7131 12.0311 19.8484 11.827 19.2625C11.6387 18.7219 11.7606 18.3188 12.0071 18.0301C12.5031 17.4489 14.2247 16.8048 16.4305 18.6689L18.3669 16.3775C15.3234 13.8055 11.6206 13.8618 9.72522 16.0824C8.77602 17.1945 8.46046 18.7178 8.99394 20.2493C9.51161 21.7355 10.7691 23.0889 12.6831 24.1927L14.1819 21.5939ZM16.4305 18.6689C18.6429 20.5385 19.5655 23.3897 19.1424 25.8818C18.7321 28.2986 17.0603 30.4087 13.8639 30.9903L14.4009 33.9418C18.9036 33.1225 21.4897 29.9792 22.1001 26.3839C22.6977 22.8639 21.4039 18.9441 18.3669 16.3775L16.4305 18.6689ZM13.8788 30.9877C12.0898 31.2946 9.99356 31.145 8.03653 30.5495C6.07431 29.9524 4.36786 28.9435 3.25942 27.6413L0.974964 29.5859C2.54954 31.4357 4.80927 32.7033 7.16321 33.4195C9.52233 34.1374 12.0922 34.338 14.3861 33.9445L13.8788 30.9877Z" fill="#00D95A"/>
+</svg>
+
+                    </a>
+                {{/next}}
+            </nav>
+
+        </div>
+
+        {{#if livereload}}
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("{{{livereload}}}");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+        {{/if}}
+
+        {{#if google_analytics}}
+        <!-- Google Analytics Tag -->
+        <script type="text/javascript">
+            var localAddrs = ["localhost", "127.0.0.1", ""];
+
+            // make sure we don't activate google analytics if the developer is
+            // inspecting the book locally...
+            if (localAddrs.indexOf(document.location.hostname) === -1) {
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+                ga('create', '{{google_analytics}}', 'auto');
+                ga('send', 'pageview');
+            }
+        </script>
+        {{/if}}
+
+        {{#if playground_line_numbers}}
+        <script type="text/javascript">
+            window.playground_line_numbers = true;
+        </script>
+        {{/if}}
+
+        {{#if playground_copyable}}
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        {{/if}}
+
+        {{#if playground_js}}
+        <script src="{{ path_to_root }}ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{{ path_to_root }}editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{{ path_to_root }}mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{{ path_to_root }}theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{{ path_to_root }}theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        {{/if}}
+
+        {{#if search_js}}
+        <script src="{{ path_to_root }}elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{{ path_to_root }}mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{{ path_to_root }}searcher.js" type="text/javascript" charset="utf-8"></script>
+        {{/if}}
+
+        <script src="{{ path_to_root }}clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{{ path_to_root }}highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{{ path_to_root }}book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        {{#each additional_js}}
+        <script type="text/javascript" src="{{ ../path_to_root }}{{this}}"></script>
+        {{/each}}
+
+        {{#if is_print}}
+        {{#if mathjax_support}}
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            MathJax.Hub.Register.StartupHook('End', function() {
+                window.setTimeout(window.print, 100);
+            });
+        });
+        </script>
+        {{else}}
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+        {{/if}}
+        {{/if}}
+
+    </body>
+</html>
